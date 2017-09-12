@@ -31,7 +31,8 @@ public class ContentFrame extends JFrame
 	
 	// Private Variables
 	private JToolBar toolbar;
-	private JPanel navigationPanel;
+	private JPanel container;
+	private JPanel navPanel;
 	private JPanel contentPanel;
 	
 	public ContentFrame()
@@ -41,7 +42,7 @@ public class ContentFrame extends JFrame
 		_toolbar = new Toolbar();
 		
 		instantiateFrame();
-		contentSetup();
+		frameSetup();
 	}
 	
 	private void instantiateFrame()
@@ -60,25 +61,52 @@ public class ContentFrame extends JFrame
 	    this.setLocation(x, y);
 	}
 	
-	private void contentSetup()
+	private void frameSetup()
 	{
 		// instantiate and setup Toolbar
 		toolbar = new JToolBar();
 		toolbarSetup();
 		
+		// instantiate and setup Container
+		container = new JPanel();
+		containerSetup();
+		
 		// instantiate and setup Navigation Panel
-		navigationPanel = new JPanel();
+		navPanel = new JPanel();
 		navigationSetup();
+		
+		// instantiate and setup Content Panel
+		contentPanel = new JPanel();
+		contentSetup();
 	}
 	
 	private void toolbarSetup()
 	{
 		toolbar = _toolbar.createToolBar(); // Setup toolbar
-		add(toolbar, BorderLayout.WEST);
+		this.add(toolbar, BorderLayout.WEST);
 	}
 
+	private void containerSetup()
+	{
+		container.setBackground(new Color(255, 0, 0));
+		container.setLayout(new BorderLayout());
+		
+		this.add(container, BorderLayout.CENTER);
+	}
+	
 	private void navigationSetup()
 	{
+		navPanel.setSize(new Dimension(100, 1220));		
+		navPanel.setBackground(new Color(0, 255, 0));
 		
+		container.add(navPanel, BorderLayout.NORTH);
+	}
+	
+	private void contentSetup()
+	{
+		//contentPanel.setSize(1220, 100);
+		contentPanel.setBackground(new Color(0, 0, 255));
+		
+		container.add(contentPanel, BorderLayout.CENTER);
 	}
 }
