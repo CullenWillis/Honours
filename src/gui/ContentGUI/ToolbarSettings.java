@@ -1,16 +1,19 @@
 package gui.ContentGUI;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
+import javax.swing.border.MatteBorder;
 
 import constants.Constants;
 
-public class Toolbar {
+public class ToolbarSettings {
 
 	JToolBar toolbar;
 	
@@ -24,7 +27,7 @@ public class Toolbar {
 	ImageIcon helpIcon;
 	ImageIcon exitIcon;
 	
-	public Toolbar() 
+	public ToolbarSettings() 
 	{
 		toolbar = new JToolBar();
 		
@@ -55,6 +58,10 @@ public class Toolbar {
         toolbar.setFloatable(false);
         toolbar.setBackground(Constants.SIDE_BAR_COLOR);
         toolbar.setLayout(new BoxLayout(toolbar, BoxLayout.Y_AXIS));
+        
+        // Border
+		MatteBorder border = BorderFactory.createMatteBorder(0, 0, 0, 3, Constants.BORDER_COLOR);
+		toolbar.setBorder(border);
 	}
 	
 	// Buttons

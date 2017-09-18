@@ -20,14 +20,18 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 import constants.Constants;
-import gui.ContentGUI.Toolbar;
+import gui.ContentGUI.ContentSettings;
+import gui.ContentGUI.NavigationSettings;
+import gui.ContentGUI.ToolbarSettings;
 
 public class ContentFrame extends JFrame
 {
 	private static final long serialVersionUID = 1L;
 
 	// Classes
-	private Toolbar _toolbar;
+	private ToolbarSettings toolbarSettings;
+	private NavigationSettings navigationSettings;
+	private ContentSettings contentSettings;
 	
 	// Private Variables
 	private JToolBar toolbar;
@@ -39,7 +43,9 @@ public class ContentFrame extends JFrame
 	{
 		super(Constants.APPLICATION_NAME); // Setup title
 		
-		_toolbar = new Toolbar();
+		toolbarSettings = new ToolbarSettings();
+		navigationSettings = new NavigationSettings();
+		contentSettings = new ContentSettings();
 		
 		instantiateFrame();
 		frameSetup();
@@ -82,7 +88,7 @@ public class ContentFrame extends JFrame
 	
 	private void toolbarSetup()
 	{
-		toolbar = _toolbar.createToolBar(); // Setup toolbar
+		toolbar = toolbarSettings.createToolBar(); // Setup toolbar
 		this.add(toolbar, BorderLayout.WEST);
 	}
 
@@ -96,17 +102,13 @@ public class ContentFrame extends JFrame
 	
 	private void navigationSetup()
 	{
-		navPanel.setSize(new Dimension(100, 1220));		
-		navPanel.setBackground(new Color(0, 255, 0));
-		
+		navPanel = navigationSettings.createNavPanel(); // Setup navigation Panel
 		container.add(navPanel, BorderLayout.NORTH);
 	}
 	
 	private void contentSetup()
 	{
-		//contentPanel.setSize(1220, 100);
-		contentPanel.setBackground(new Color(0, 0, 255));
-		
+		contentPanel = contentSettings.createCotnentPanel(); // Setup content Panel
 		container.add(contentPanel, BorderLayout.CENTER);
 	}
 }
