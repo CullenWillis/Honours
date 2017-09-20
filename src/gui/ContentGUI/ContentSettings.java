@@ -1,8 +1,13 @@
 package gui.ContentGUI;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.border.MatteBorder;
 
 import constants.Constants;
 
@@ -28,10 +33,7 @@ public class ContentSettings {
 	{
 		// contentPanel settings
 		contentPanel.setBackground(Constants.BACKGROUND_COLOR);
-	}
-	
-	private void fileDialogSetup()
-	{
-		
+		contentPanel.setLayout(null);
+		contentPanel.setVisible(true);
 	}
 }

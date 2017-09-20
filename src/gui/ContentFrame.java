@@ -3,6 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +23,7 @@ import javax.swing.JToolBar;
 import constants.Constants;
 import gui.ContentGUI.ContentSettings;
 import gui.ContentGUI.NavigationSettings;
+import gui.ContentGUI.PicturePanel;
 import gui.ContentGUI.ToolbarSettings;
 
 public class ContentFrame extends JFrame
@@ -32,6 +34,9 @@ public class ContentFrame extends JFrame
 	private ToolbarSettings toolbarSettings;
 	private NavigationSettings navigationSettings;
 	private ContentSettings contentSettings;
+	
+	//Pictures
+	private PicturePanel picturePanel1, picturePanel2;
 	
 	// Private Variables
 	private JToolBar toolbar;
@@ -46,6 +51,9 @@ public class ContentFrame extends JFrame
 		toolbarSettings = new ToolbarSettings();
 		navigationSettings = new NavigationSettings();
 		contentSettings = new ContentSettings();
+		
+		picturePanel1 = new PicturePanel();
+		picturePanel2 = new PicturePanel();
 		
 		instantiateFrame();
 		frameSetup();
@@ -110,5 +118,21 @@ public class ContentFrame extends JFrame
 	{
 		contentPanel = contentSettings.createCotnentPanel(); // Setup content Panel
 		container.add(contentPanel, BorderLayout.CENTER);
+		
+		pictureBoxSetup();
+	}
+	
+	private void pictureBoxSetup()
+	{
+		int gapSize = 50;
+		int height = Constants.FRAME_HEIGHT / 2 - 200;
+		int width = Constants.FRAME_WIDTH - picturePanel2.getWidth() - 63 - gapSize;
+		
+		picturePanel1.setLocation(new Point(gapSize, height));
+		picturePanel2.setLocation(new Point(width, height));
+		
+		contentPanel.add(picturePanel1, null);
+		contentPanel.add(picturePanel2, null);
+		
 	}
 }
