@@ -4,22 +4,27 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetContext;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -31,7 +36,7 @@ import gui.Content.NavigationSettings;
 import gui.Content.NoImagePanel;
 import gui.Content.ToolbarSettings;
 
-public class ContentFrame extends JFrame
+public class ContentFrame extends JFrame implements DropTargetListener
 {
 	private static final long serialVersionUID = 1L;
 
@@ -43,17 +48,14 @@ public class ContentFrame extends JFrame
 	//Pictures
 	private JPanel pictureBoxPast, pictureBoxPresent;
 	private NoImagePanel noImagePast, noImagePresent;
-	private ImagePanel imagePast, imagePresent;
+	public ImagePanel imagePast, imagePresent;
 	
 	// Private Variables
 	private JToolBar toolbar;
-	private JPanel container;
-	private JPanel navPanel;
-	private JPanel contentPanel;
+	private JPanel container, navPanel, contentPanel;
 	
 	private JFileChooser fileChooser;
-	private File file1;
-	private File file2;
+	public File file1, file2;
 	
 	public ContentFrame()
 	{
@@ -63,6 +65,7 @@ public class ContentFrame extends JFrame
 		navigationSettings = new NavigationSettings();
 		contentSettings = new ContentSettings();
 		
+		
 		pictureBoxPast = new JPanel();
 		pictureBoxPresent = new JPanel();
 		
@@ -70,7 +73,10 @@ public class ContentFrame extends JFrame
 		noImagePresent = new NoImagePanel();
 		
 		imagePast = new ImagePanel();
+		imagePast.setName("imagePast");
+		
 		imagePresent = new ImagePanel();
+		imagePresent.setName("imagePresent");
 		
 		instantiateFrame();
 		
@@ -78,6 +84,16 @@ public class ContentFrame extends JFrame
 		fileChooserSetup();
 		
 		frameSetup();
+		
+		instantiateDragandDrop();
+	}
+	
+	private void instantiateDragandDrop()
+	{
+		new DropTarget(noImagePast, this);
+		new DropTarget(noImagePresent, this);
+		new DropTarget(imagePast, this);
+		new DropTarget(imagePresent, this);
 	}
 	
 	private void fileChooserSetup()
@@ -265,5 +281,119 @@ public class ContentFrame extends JFrame
 		
 		cardsPast.show(pictureBoxPast, "noImage");
 		cardsPresent.show(pictureBoxPresent, "noImage");
+	}
+
+	
+	@Override
+	public void dragEnter(DropTargetDragEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+
+	@Override
+	public void dragExit(DropTargetEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+
+	@Override
+	public void dragOver(DropTargetDragEvent e) 
+	{
+		
+	}
+	
+
+	@Override
+	public void drop(DropTargetDropEvent event) 
+	{
+		try
+		{		
+			// Accept dropped items
+			DropTargetContext dtc = event.getDropTargetContext();
+			
+			JPanel panel = new JPanel();
+			panel = (JPanel) dtc.getComponent();
+			
+			event.acceptDrop(DnDConstants.ACTION_COPY);
+			
+			// Transferable items from file
+			Transferable t = event.getTransferable();
+			
+			// Get data formats
+			DataFlavor[] df = t.getTransferDataFlavors();
+			
+			// Loop through flavours
+			for(DataFlavor f : df)
+			{
+				try
+				{
+					// Check if items are of file type
+					if(f.isFlavorJavaFileListType())
+					{
+						@SuppressWarnings("unchecked")
+						List<File> files = (List<File>) t.getTransferData(f);
+						
+						for(File file : files)
+						{
+							
+							if(checkDropPoisition())
+							{
+								file1 = file;
+								
+								imagePast.loadImage(file1);
+								
+								setView(true);
+							}
+							else
+							{
+								file2 = file;
+								
+								imagePresent.loadImage(file2);
+								
+								setView(false);
+							}
+						}
+					}
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			event.rejectDrop();
+		}
+		
+	}
+	
+	private Boolean checkDropPoisition()
+	{
+		int mouseX = MouseInfo.getPointerInfo().getLocation().x - this.getLocationOnScreen().x;
+		int mouseY = MouseInfo.getPointerInfo().getLocation().y - this.getLocationOnScreen().y;
+		
+		int positionX = 107;
+		int positionY = 119;
+		int borders = 401;
+		
+		if(mouseX > positionX && mouseX < (positionX + borders))
+		{
+			if(mouseY > positionY && mouseY < (positionY + borders))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public void dropActionChanged(DropTargetDragEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
