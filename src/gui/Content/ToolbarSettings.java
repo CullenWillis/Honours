@@ -18,11 +18,13 @@ public class ToolbarSettings {
 	JToolBar toolbar;
 	
 	// Buttons
+	JButton refreshButton;
 	JButton settingsButton;
 	JButton helpButton;
 	JButton exitButton;
 	
 	// Image Icons
+	ImageIcon refreshIcon;
 	ImageIcon settingsIcon;
 	ImageIcon helpIcon;
 	ImageIcon exitIcon;
@@ -41,6 +43,7 @@ public class ToolbarSettings {
         buttonSetup(); // Setup each button
         
         // Add buttons to the toolbar
+        toolbar.add(refreshButton);
         toolbar.add(settingsButton);
         toolbar.add(helpButton);
         toolbar.add(exitButton);
@@ -67,6 +70,12 @@ public class ToolbarSettings {
 	// Buttons
 	private void buttonSetup()
 	{
+		refreshButton = new JButton(refreshIcon); // Settings
+		refreshButton.setToolTipText("Settings");
+		refreshButton.setFocusPainted(false);
+		refreshButton.setFocusable(false);
+		refreshButton.setBackground(Constants.SIDE_BAR_COLOR);
+        
         settingsButton = new JButton(settingsIcon); // Settings
         settingsButton.setToolTipText("Settings");
         settingsButton.setFocusPainted(false);
@@ -99,6 +108,7 @@ public class ToolbarSettings {
 	private void getIcons()
 	{
 		// Icons
+		refreshIcon = new ImageIcon("resources/MaterialSettings.png");
         settingsIcon = new ImageIcon("resources/MaterialSettings.png");
         helpIcon = new ImageIcon("resources/MaterialHelp.png");
         exitIcon = new ImageIcon("resources/MaterialExit.png");

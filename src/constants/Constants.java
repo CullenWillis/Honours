@@ -12,6 +12,8 @@ private Constants(){ }
 	public static final int FRAME_HEIGHT = 720;
 	public static final int MENU_HEIGHT = 100;
 	public static final int IMAGE_LABEL_BORDER = 15;
+	public static final int IMAGE_WIDTH = 400;
+	public static final int IMAGE_HEIGHT = 400;
 	
 	public static final Color TOP_BAR_COLOR = new Color(255, 255, 255);
 	public static final Color SIDE_BAR_COLOR = new Color(240, 240 ,240);

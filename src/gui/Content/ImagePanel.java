@@ -1,6 +1,7 @@
 package gui.Content;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.io.File;
 
@@ -29,7 +30,9 @@ public class ImagePanel extends JPanel {
 		int gap = 5;
 		
 		setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
-	
+		imageLabel.setHorizontalAlignment(JLabel.CENTER);
+		imageLabel.setVerticalAlignment(JLabel.CENTER);
+		
 		add(imageLabel);
 	}
 	
@@ -42,11 +45,20 @@ public class ImagePanel extends JPanel {
 	// Scaling image
 	private Image scaleImage(Image image)
 	{
-		ImageIcon icon = new ImageIcon(image);
-		int width = icon.getIconWidth();
-		int height = icon.getIconHeight();
+		Dimension imageSize = new Dimension(image.getWidth(null), image.getHeight(null));
+		Dimension boundary = new Dimension(Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
+		Dimension scaledSize = getScaledDimension(imageSize, boundary);
 		
-		return image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		return image.getScaledInstance(scaledSize.width, scaledSize.height, Image.SCALE_SMOOTH);
+	}
+	
+	Dimension getScaledDimension(Dimension imageSize, Dimension boundary) 
+	{
+	    double widthRatio = boundary.getWidth() / imageSize.getWidth();
+	    double heightRatio = boundary.getHeight() / imageSize.getHeight();
+	    double ratio = Math.min(widthRatio, heightRatio);
+
+	    return new Dimension((int) (imageSize.width * ratio), (int) (imageSize.height * ratio));
 	}
 	
 	// Load image
