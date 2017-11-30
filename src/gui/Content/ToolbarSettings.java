@@ -12,30 +12,33 @@ import javax.swing.JToolBar;
 import javax.swing.border.MatteBorder;
 
 import constants.Constants;
+import gui.ContentFrame;
 
 public class ToolbarSettings {
 
 	JToolBar toolbar;
+	ContentFrame contentFrame;
 	
 	// Buttons
-	JButton refreshButton;
+	JButton resetButton;
 	JButton settingsButton;
 	JButton helpButton;
 	JButton exitButton;
 	
 	// Image Icons
-	ImageIcon refreshIcon;
+	ImageIcon resetIcon;
 	ImageIcon settingsIcon;
 	ImageIcon helpIcon;
 	ImageIcon exitIcon;
 	
-	public ToolbarSettings() 
+	public ToolbarSettings(ContentFrame frame) 
 	{
 		toolbar = new JToolBar();
+		contentFrame = frame;
 		
 		toolbarSetup();
 	}
-	
+
 	// Create and return toolbar
 	public JToolBar createToolBar() 
 	{
@@ -43,7 +46,7 @@ public class ToolbarSettings {
         buttonSetup(); // Setup each button
         
         // Add buttons to the toolbar
-        toolbar.add(refreshButton);
+        toolbar.add(resetButton);
         toolbar.add(settingsButton);
         toolbar.add(helpButton);
         toolbar.add(exitButton);
@@ -70,11 +73,11 @@ public class ToolbarSettings {
 	// Buttons
 	private void buttonSetup()
 	{
-		refreshButton = new JButton(refreshIcon); // Settings
-		refreshButton.setToolTipText("Settings");
-		refreshButton.setFocusPainted(false);
-		refreshButton.setFocusable(false);
-		refreshButton.setBackground(Constants.SIDE_BAR_COLOR);
+		resetButton = new JButton(resetIcon); // Settings
+		resetButton.setToolTipText("Reset Image Frames");
+		resetButton.setFocusPainted(false);
+		resetButton.setFocusable(false);
+		resetButton.setBackground(Constants.SIDE_BAR_COLOR);
         
         settingsButton = new JButton(settingsIcon); // Settings
         settingsButton.setToolTipText("Settings");
@@ -99,6 +102,9 @@ public class ToolbarSettings {
 	private void eventHandlerManager()
 	{
 		// EventHandlers
+		resetButton.addActionListener((ActionEvent event) -> {
+            contentFrame.resetViews();
+        });
         exitButton.addActionListener((ActionEvent event) -> {
             System.exit(0);
         });
@@ -108,7 +114,7 @@ public class ToolbarSettings {
 	private void getIcons()
 	{
 		// Icons
-		refreshIcon = new ImageIcon("resources/MaterialSettings.png");
+		resetIcon = new ImageIcon("resources/MaterialRefresh.png");
         settingsIcon = new ImageIcon("resources/MaterialSettings.png");
         helpIcon = new ImageIcon("resources/MaterialHelp.png");
         exitIcon = new ImageIcon("resources/MaterialExit.png");

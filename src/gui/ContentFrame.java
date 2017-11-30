@@ -50,6 +50,9 @@ public class ContentFrame extends JFrame implements DropTargetListener
 	private NoImagePanel noImagePast, noImagePresent;
 	public ImagePanel imagePast, imagePresent;
 	
+	//Buttons
+	private JButton detectButton;
+	
 	// Private Variables
 	private JToolBar toolbar;
 	private JPanel container, navPanel, contentPanel;
@@ -61,10 +64,9 @@ public class ContentFrame extends JFrame implements DropTargetListener
 	{
 		super(Constants.APPLICATION_NAME); // Setup title
 		
-		toolbarSettings = new ToolbarSettings();
+		toolbarSettings = new ToolbarSettings(this);
 		navigationSettings = new NavigationSettings();
 		contentSettings = new ContentSettings();
-		
 		
 		pictureBoxPast = new JPanel();
 		pictureBoxPresent = new JPanel();
@@ -77,6 +79,8 @@ public class ContentFrame extends JFrame implements DropTargetListener
 		
 		imagePresent = new ImagePanel();
 		imagePresent.setName("imagePresent");
+		
+		detectButton = new JButton("Start");
 		
 		instantiateFrame();
 		
@@ -163,6 +167,7 @@ public class ContentFrame extends JFrame implements DropTargetListener
 		container.add(contentPanel, BorderLayout.CENTER);
 		
 		pictureBoxSetup();
+		detectButtonSetup();
 	}
 	
 	private void pictureBoxSetup()
@@ -195,6 +200,19 @@ public class ContentFrame extends JFrame implements DropTargetListener
 		
 		cardsPast.show(pictureBoxPast, "noImage");
 		cardsPresent.show(pictureBoxPresent, "noImage");
+	}
+	
+	private void detectButtonSetup()
+	{
+		int x = Constants.FRAME_WIDTH / 2;
+		int y = Constants.FRAME_HEIGHT / 2;
+		
+		detectButton.setBounds(x - 80, y - 10, 100, 50);
+		detectButton.setFocusPainted(false);
+		detectButton.setVisible(true);
+		detectButton.setFocusable(false);
+		
+        contentPanel.add(detectButton, null);
 	}
 	
 	private void noImagePanelSetup()
@@ -276,13 +294,14 @@ public class ContentFrame extends JFrame implements DropTargetListener
 	
 	public void resetViews()
 	{
+		file1 = null;
+		file2 = null;
 		CardLayout cardsPast = (CardLayout) pictureBoxPast.getLayout();
 		CardLayout cardsPresent = (CardLayout) pictureBoxPresent.getLayout();
 		
 		cardsPast.show(pictureBoxPast, "noImage");
 		cardsPresent.show(pictureBoxPresent, "noImage");
 	}
-
 	
 	@Override
 	public void dragEnter(DropTargetDragEvent arg0) {
