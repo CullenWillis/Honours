@@ -19,6 +19,8 @@ public class ImagePanel extends JPanel {
 	private JLabel imageLabel;
 	private ImageIcon transformedImageIcon;
 	
+	private Image imageSrc;
+	private File fileSrc;
 	
 	// Contains image
 	public ImagePanel() 
@@ -39,7 +41,8 @@ public class ImagePanel extends JPanel {
 	// Updates image
 	public void updateImage(Image image)
 	{		
-		imageLabel.setIcon(new ImageIcon(scaleImage(image)));
+		setImage(scaleImage(image));
+		imageLabel.setIcon(new ImageIcon(imageSrc));
 	}
 	
 	// Scaling image
@@ -65,6 +68,7 @@ public class ImagePanel extends JPanel {
 	public void loadImage(File file)
 	{
 		// Store reference to transport icon
+		setFile(file);
 		this.transformedImageIcon = new ImageIcon(file.getAbsolutePath());
 		Image image = transformedImageIcon.getImage();
 		
@@ -81,4 +85,23 @@ public class ImagePanel extends JPanel {
 		return true;
 	}
 	
+	public void setImage(Image image)
+	{
+		imageSrc = image;
+	}
+	
+	public Image getImage()
+	{
+		return imageSrc;
+	}
+	
+	public void setFile(File file)
+	{
+		fileSrc = file;
+	}
+	
+	public File getFile()
+	{
+		return fileSrc;
+	}
 }

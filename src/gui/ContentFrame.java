@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.MouseInfo;
 import java.awt.Point;
-import java.awt.PointerInfo;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -29,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import Algorithm.Algorithm;
 import constants.Constants;
 import gui.Content.ContentSettings;
 import gui.Content.ImagePanel;
@@ -44,6 +44,7 @@ public class ContentFrame extends JFrame implements DropTargetListener
 	private ToolbarSettings toolbarSettings;
 	private NavigationSettings navigationSettings;
 	private ContentSettings contentSettings;
+	private Algorithm algorithm;
 	
 	//Pictures
 	private JPanel pictureBoxPast, pictureBoxPresent;
@@ -211,6 +212,7 @@ public class ContentFrame extends JFrame implements DropTargetListener
 		detectButton.setFocusPainted(false);
 		detectButton.setVisible(true);
 		detectButton.setFocusable(false);
+		buttonDetectionEventHandler(detectButton);
 		
         contentPanel.add(detectButton, null);
 	}
@@ -273,6 +275,20 @@ public class ContentFrame extends JFrame implements DropTargetListener
 					
 					ContentFrame.this.setView(false);
 				}
+			}
+		});
+	}
+	
+	private void buttonDetectionEventHandler(JButton button)
+	{
+		// Add eventListener to load image button (Will open the dialog window)
+		button.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent event) 
+			{
+				algorithm = new Algorithm(imagePast, imagePresent);
+				
+				algorithm.startDetection();
 			}
 		});
 	}
