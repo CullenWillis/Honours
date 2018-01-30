@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.MouseInfo;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
@@ -23,28 +22,22 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JToolBar;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import Algorithm.Algorithm;
 import constants.Constants;
-import gui.Content.ContentSettings;
-import gui.Content.ImagePanel;
-import gui.Content.NavigationSettings;
-import gui.Content.NoImagePanel;
-import gui.Content.ToolbarSettings;
+import gui.ContentMainClasses.ContentSettings;
+import gui.ContentMainClasses.ImagePanel;
+import gui.ContentMainClasses.NavigationSettings;
+import gui.ContentMainClasses.NoImagePanel;
 
-public class ContentFrame extends JFrame implements DropTargetListener
-{
-	private static final long serialVersionUID = 1L;
+public class ContentMain implements DropTargetListener{
 
-	// Classes
-	private ToolbarSettings toolbarSettings;
-	private NavigationSettings navigationSettings;
-	private ContentSettings contentSettings;
+	ContentManager manager;
+	
 	private Algorithm algorithm;
+	private ContentSettings contentSettings;
 	
 	//Pictures
 	private JPanel pictureBoxPast, pictureBoxPresent;
@@ -54,19 +47,27 @@ public class ContentFrame extends JFrame implements DropTargetListener
 	//Buttons
 	private JButton detectButton;
 	
-	// Private Variables
-	private JToolBar toolbar;
 	private JPanel container, navPanel, contentPanel;
 	
 	private JFileChooser fileChooser;
 	public File file1, file2;
 	
-	public ContentFrame()
+	public ContentMain(ContentManager _manager)
 	{
-		super(Constants.APPLICATION_NAME); // Setup title
+		manager = _manager;
+	}
+	
+	public JPanel setup()
+	{
+		instantiateDragandDrop();
+		 
+		instantiateContents();
 		
-		toolbarSettings = new ToolbarSettings(this);
-		navigationSettings = new NavigationSettings();
+		return container;
+	}
+	
+	private void instantiateContents()
+	{
 		contentSettings = new ContentSettings();
 		
 		pictureBoxPast = new JPanel();
@@ -83,16 +84,12 @@ public class ContentFrame extends JFrame implements DropTargetListener
 		
 		detectButton = new JButton("Start");
 		
-		instantiateFrame();
-		
 		this.fileChooser = new JFileChooser();
 		fileChooserSetup();
 		
 		frameSetup();
-		
-		instantiateDragandDrop();
 	}
-	
+
 	private void instantiateDragandDrop()
 	{
 		new DropTarget(noImagePast, this);
@@ -107,64 +104,26 @@ public class ContentFrame extends JFrame implements DropTargetListener
 		fileChooser.setFileFilter(filter);
 	}
 	
-	private void instantiateFrame()
-	{
-		// Settings
-		this.setResizable(false);
-		this.setSize(Constants.FRAME_WIDTH, Constants.FRAME_HEIGHT);
-		this.setVisible(true);
-		this.getContentPane().setBackground(Constants.BACKGROUND_COLOR);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		// Sets frame in the center of the screen
-		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	    int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
-	    this.setLocation(x, y);
-	}
-	
 	private void frameSetup()
-	{
-		// instantiate and setup Toolbar
-		toolbar = new JToolBar();
-		toolbarSetup();
-		
+	{	
 		// instantiate and setup Container
 		container = new JPanel();
 		containerSetup();
-		
-		// instantiate and setup Navigation Panel
-		navPanel = new JPanel();
-		navigationSetup();
 		
 		// instantiate and setup Content Panel
 		contentPanel = new JPanel();
 		contentSetup();
 	}
 	
-	private void toolbarSetup()
-	{
-		toolbar = toolbarSettings.createToolBar(); // Setup toolbar
-		this.add(toolbar, BorderLayout.WEST);
-	}
-
 	private void containerSetup()
 	{
 		container.setBackground(new Color(255, 0, 0));
 		container.setLayout(new BorderLayout());
-		
-		this.add(container, BorderLayout.CENTER);
-	}
-	
-	private void navigationSetup()
-	{
-		navPanel = navigationSettings.createNavPanel(); // Setup navigation Panel
-		container.add(navPanel, BorderLayout.NORTH);
 	}
 	
 	private void contentSetup()
 	{
-		contentPanel = contentSettings.createCotnentPanel(); // Setup content Panel
+		contentPanel = contentSettings.createContentPanel(); // Setup content Panel
 		container.add(contentPanel, BorderLayout.CENTER);
 		
 		pictureBoxSetup();
@@ -248,13 +207,13 @@ public class ContentFrame extends JFrame implements DropTargetListener
 		{
 			public void actionPerformed(ActionEvent event) 
 			{
-				if(fileChooser.showOpenDialog(ContentFrame.this) == JFileChooser.APPROVE_OPTION)
+				if(fileChooser.showOpenDialog(manager) == JFileChooser.APPROVE_OPTION)
 				{
-					ContentFrame.this.file1 = fileChooser.getSelectedFile();
+					ContentMain.this.file1 = fileChooser.getSelectedFile();
 					
-					ContentFrame.this.imagePast.loadImage(ContentFrame.this.file1);
+					ContentMain.this.imagePast.loadImage(ContentMain.this.file1);
 					
-					ContentFrame.this.setView(true);
+					ContentMain.this.setView(true);
 				}
 			}
 		});
@@ -267,13 +226,13 @@ public class ContentFrame extends JFrame implements DropTargetListener
 		{
 			public void actionPerformed(ActionEvent event) 
 			{
-				if(fileChooser.showOpenDialog(ContentFrame.this) == JFileChooser.APPROVE_OPTION)
+				if(fileChooser.showOpenDialog(manager) == JFileChooser.APPROVE_OPTION)
 				{
-					ContentFrame.this.file2 = fileChooser.getSelectedFile();
+					ContentMain.this.file2 = fileChooser.getSelectedFile();
 					
-					ContentFrame.this.imagePresent.loadImage(ContentFrame.this.file2);
+					ContentMain.this.imagePresent.loadImage(ContentMain.this.file2);
 					
-					ContentFrame.this.setView(false);
+					ContentMain.this.setView(false);
 				}
 			}
 		});
@@ -319,12 +278,16 @@ public class ContentFrame extends JFrame implements DropTargetListener
 		cardsPresent.show(pictureBoxPresent, "noImage");
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see java.awt.dnd.DropTargetListener#dragEnter(java.awt.dnd.DropTargetDragEvent)
+	 */
+	
 	@Override
 	public void dragEnter(DropTargetDragEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-	
 
 	@Override
 	public void dragExit(DropTargetEvent arg0) {
@@ -332,14 +295,12 @@ public class ContentFrame extends JFrame implements DropTargetListener
 		
 	}
 	
-
 	@Override
 	public void dragOver(DropTargetDragEvent e) 
 	{
 		
 	}
 	
-
 	@Override
 	public void drop(DropTargetDropEvent event) 
 	{
@@ -408,8 +369,8 @@ public class ContentFrame extends JFrame implements DropTargetListener
 	
 	private Boolean checkDropPoisition()
 	{
-		int mouseX = MouseInfo.getPointerInfo().getLocation().x - this.getLocationOnScreen().x;
-		int mouseY = MouseInfo.getPointerInfo().getLocation().y - this.getLocationOnScreen().y;
+		int mouseX = MouseInfo.getPointerInfo().getLocation().x - manager.getLocationOnScreen().x;
+		int mouseY = MouseInfo.getPointerInfo().getLocation().y - manager.getLocationOnScreen().y;
 		
 		int positionX = 107;
 		int positionY = 119;

@@ -9,15 +9,18 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import gui.Content.ImagePanel;
+import gui.ContentMainClasses.ImagePanel;
 
 public class Algorithm {
 
 	//Classes
 	JNIWrapper wrapper;
+	ImageDetails pastDetails;
+	ImageDetails presentDetails;
 	
-	private int[][] landmarksPast;
-	private int[][] landmarksPresent;
+	private int[][] landmarks;
+	
+	private int[][][] triangles;
 	
 	private ImagePanel imagePast;
 	private ImagePanel imagePresent;
@@ -26,9 +29,6 @@ public class Algorithm {
 	{
 		setimagePast(past);
 		setimagePresent(present);
-		
-		landmarksPast = new int[68][2];
-		landmarksPresent = new int[68][2];
 	}
 	
 	public double startDetection()
@@ -42,13 +42,18 @@ public class Algorithm {
 	{
 		wrapper = new JNIWrapper();
 		
-		landmarksPast = wrapper.getLandmarks(imagePast.getFile().getAbsolutePath());
-		landmarksPresent = wrapper.getLandmarks(imagePresent.getFile().getAbsolutePath());
+		landmarks = wrapper.getLandmarks(imagePast.getFile().getAbsolutePath(), "Points1.txt");
+		triangles = wrapper.getDelaunayTriangulation(imagePast.getFile().getAbsolutePath(), "Points1_2.txt", "delaunay1.txt");
+		pastDetails = new ImageDetails(landmarks, triangles, imagePast);
 		
-		if(landmarksPast.length > 0 && landmarksPresent.length > 0)
+		landmarks = wrapper.getLandmarks(imagePresent.getFile().getAbsolutePath(), "Points2.txt");
+		triangles = wrapper.getDelaunayTriangulation(imagePresent.getFile().getAbsolutePath(), "Points2_2.txt", "delaunay2.txt");
+		presentDetails = new ImageDetails(landmarks, triangles, imagePast);
+		
+		if(pastDetails.getLandmarksLength() > 0 && presentDetails.getLandmarksLength() > 0)
 		{
-			addFrame(landmarksPast, imagePast);
-			addFrame(landmarksPresent, imagePresent);
+			addFrame(pastDetails.getLandmarks(), imagePast);
+			addFrame(presentDetails.getLandmarks(), imagePresent);
 		}
 	}
 	

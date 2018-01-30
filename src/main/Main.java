@@ -4,7 +4,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import gui.ContentFrame;
+import gui.ContentManager;
 
 public class Main {
 
@@ -25,7 +25,7 @@ public class Main {
 			
 			public void run()
 			{
-				new ContentFrame();
+				new ContentManager();
 			}
 		});
 	}

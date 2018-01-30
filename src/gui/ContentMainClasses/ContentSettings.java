@@ -1,4 +1,4 @@
-package gui.Content;
+package gui.ContentMainClasses;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,7 +25,7 @@ public class ContentSettings {
 	}
 	
 	// Create and return content Panel
-	public JPanel createCotnentPanel() 
+	public JPanel createContentPanel() 
 	{
         return contentPanel;
     }
