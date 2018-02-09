@@ -1,4 +1,4 @@
-package Algorithm;
+package gui.DrawTools;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -8,12 +8,16 @@ import java.awt.Image;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-class MyPanel extends JPanel {
+public class DrawToolLandmarks extends JPanel {
  
-    Image backgroundImage;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	Image backgroundImage;
     int[][] locations = new int[68][2];
 
-    public MyPanel(int[][] _locations, Image _image) 
+    public DrawToolLandmarks(int[][] _locations, Image _image) 
     {
     	backgroundImage = _image;
     	locations = _locations;
@@ -26,7 +30,7 @@ class MyPanel extends JPanel {
         g.drawImage(backgroundImage, 0, 0, null);
         g.setColor(Color.WHITE);
         
-        // Draw a little square at where the mouse was clicked.
+        // Draw a little square
         for(int i = 0; i < 68; i++)
         {
         	int timeSize = 0;

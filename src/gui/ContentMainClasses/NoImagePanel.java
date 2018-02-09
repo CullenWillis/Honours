@@ -29,6 +29,11 @@ public class NoImagePanel extends JPanel{
 		setup();
 	}
 	
+	public NoImagePanel(boolean TextOption)
+	{
+		intializeJPanel();
+	}
+	
 	private void setup()
 	{
 		intializeJPanel();

@@ -15,8 +15,7 @@ public class Algorithm {
 
 	//Classes
 	JNIWrapper wrapper;
-	ImageDetails pastDetails;
-	ImageDetails presentDetails;
+	ImageDetails pastDetails, presentDetails;
 	
 	private int[][] landmarks;
 	
@@ -31,43 +30,24 @@ public class Algorithm {
 		setimagePresent(present);
 	}
 	
-	public double startDetection()
+	public void startDetection()
 	{
-		getLandmakrs();
-		
-		return 0;
+		getFacialExtration();
 	}
 	
-	private void getLandmakrs()
+	private void getFacialExtration()
 	{
 		wrapper = new JNIWrapper();
 		
-		landmarks = wrapper.getLandmarks(imagePast.getFile().getAbsolutePath(), "Points1.txt");
-		triangles = wrapper.getDelaunayTriangulation(imagePast.getFile().getAbsolutePath(), "Points1_2.txt", "delaunay1.txt");
+		landmarks = wrapper.getLandmarks(imagePast.getTransformedFile().getAbsolutePath(), "Points1.txt");	
+		triangles = wrapper.getDelaunayTriangulation(imagePast.getTransformedFile().getAbsolutePath(), "Points1_2.txt", "delaunay1.txt");
 		pastDetails = new ImageDetails(landmarks, triangles, imagePast);
-		
-		landmarks = wrapper.getLandmarks(imagePresent.getFile().getAbsolutePath(), "Points2.txt");
-		triangles = wrapper.getDelaunayTriangulation(imagePresent.getFile().getAbsolutePath(), "Points2_2.txt", "delaunay2.txt");
+
+		landmarks = wrapper.getLandmarks(imagePresent.getTransformedFile().getAbsolutePath(), "Points2.txt");
+		triangles = wrapper.getDelaunayTriangulation(imagePresent.getTransformedFile().getAbsolutePath(), "Points2_2.txt", "delaunay2.txt");
 		presentDetails = new ImageDetails(landmarks, triangles, imagePast);
 		
-		if(pastDetails.getLandmarksLength() > 0 && presentDetails.getLandmarksLength() > 0)
-		{
-			addFrame(pastDetails.getLandmarks(), imagePast);
-			addFrame(presentDetails.getLandmarks(), imagePresent);
-		}
-	}
-	
-	private void addFrame(int[][] landmarks ,ImagePanel iPanel)
-	{
-		JFrame frame = new JFrame("LandmarkDemo");
-		Image image = new ImageIcon(iPanel.getFile().getAbsolutePath()).getImage();
-		MyPanel panel = new MyPanel(landmarks, image);
-		
-		frame.setDefaultCloseOperation(frame.DISPOSE_ON_CLOSE);
-		frame.getContentPane().add(panel, BorderLayout.CENTER);
-		frame.setResizable(false);
-		frame.setSize(new Dimension(image.getWidth(null) + 25, image.getHeight(null) + 25));
-		frame.setVisible(true);
+		System.out.println("Facial Extration Complete! \n");
 	}
 	
 	// Setters & Getters
@@ -89,5 +69,15 @@ public class Algorithm {
 	public ImagePanel getimagePresent()
 	{
 		return imagePresent;
+	}
+	
+	public ImageDetails getPastDetails()
+	{
+		return pastDetails;
+	}
+	
+	public ImageDetails getPresentDetails()
+	{
+		return presentDetails;
 	}
 }

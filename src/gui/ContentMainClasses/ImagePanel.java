@@ -2,9 +2,18 @@ package gui.ContentMainClasses;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -17,10 +26,13 @@ public class ImagePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private JLabel imageLabel;
-	private ImageIcon transformedImageIcon;
 	
 	private Image imageSrc;
 	private File fileSrc;
+	
+	private ImageIcon transformedImageIcon;
+	private File transformedImageFile;
+	private String transformedImagePath;
 	
 	// Contains image
 	public ImagePanel() 
@@ -41,7 +53,14 @@ public class ImagePanel extends JPanel {
 	// Updates image
 	public void updateImage(Image image)
 	{		
-		setImage(scaleImage(image));
+		image = scaleImage(image);
+		
+		transformedImageIcon = new ImageIcon(image);
+		
+		BufferedImage i = getBufferedImage(image);
+		
+		writeImage(i);
+		setImage(image);
 		imageLabel.setIcon(new ImageIcon(imageSrc));
 	}
 	
@@ -69,13 +88,86 @@ public class ImagePanel extends JPanel {
 	{
 		// Store reference to transport icon
 		setFile(file);
-		this.transformedImageIcon = new ImageIcon(file.getAbsolutePath());
-		Image image = transformedImageIcon.getImage();
+		
+		//Get File
+		Image image = null;
+		
+		try
+		{
+			image = ImageIO.read(file);
+		}
+		catch (IOException e) 
+		{
+			System.out.println("Error: " + e);
+		}
 		
 		// Update image after transformation
 		updateImage(image);
 	}
-
+	
+	public void writeImage(BufferedImage image)
+	{
+		try
+		{
+			String dataFolder = System.getenv("APPDATA");
+			String path1 = dataFolder + "\\FacialComparison\\images\\processedImage.jpg";	
+			String path2 = dataFolder + "\\FacialComparison\\images\\processedImage1.jpg";
+			
+			File f1 = new File(path1);  //output file path
+			File f2 = new File(path2);
+			
+			Path pathToFile1 = Paths.get(path1);
+			Path pathToFile2 = Paths.get(path2);
+			
+			if(f1.exists() && f2.exists())
+			{
+				try 
+				{
+				    Files.delete(pathToFile1);
+				    Files.delete(pathToFile2);
+				} 
+				catch (NoSuchFileException x) 
+				{
+				    System.err.format("%s: no such" + " file or directory%n", path1);
+				    System.err.format("%s: no such" + " file or directory%n", path2);
+				} 
+				catch (DirectoryNotEmptyException x) 
+				{
+				    System.err.format("%s not empty%n", path1);
+				    System.err.format("%s not empty%n", path2);
+				} 
+				catch (IOException x) 
+				{
+				    // File permission problems are caught here.
+				    System.err.println(x);
+				}
+			}
+			
+			if(!f1.exists())
+			{
+				Files.createDirectories(pathToFile1.getParent());
+				
+				transformedImagePath = path1;
+				ImageIO.write(image, "jpg", f1);
+				
+				transformedImageFile = f1;
+			}
+			else if (f1.exists())
+			{
+				Files.createDirectories(pathToFile2.getParent());
+				
+				transformedImagePath = path2;
+				ImageIO.write(image, "jpg", f2);
+				
+				transformedImageFile = f2;
+			}	
+		}
+		catch(IOException e)
+		{
+			System.out.println("Error: " + e);
+		}
+	}
+	
 	public boolean checkIcon()
 	{
 		if (imageLabel.getIcon() == null) 
@@ -103,5 +195,29 @@ public class ImagePanel extends JPanel {
 	public File getFile()
 	{
 		return fileSrc;
+	}
+	
+	public File getTransformedFile()
+	{
+		return transformedImageFile;
+	}
+
+	public String getTransformedPath()
+	{
+		return transformedImagePath;
+	}
+	
+	public static BufferedImage getBufferedImage(Image img)
+	{
+	    // Create a buffered image with transparency
+	    BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+	    // Draw the image on to the buffered image
+	    Graphics2D bGr = bimage.createGraphics();
+	    bGr.drawImage(img, 0, 0, null);
+	    bGr.dispose();
+
+	    // Return the buffered image
+	    return bimage;
 	}
 }

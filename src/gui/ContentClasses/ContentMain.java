@@ -1,4 +1,4 @@
-package gui;
+package gui.ContentClasses;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -26,7 +26,9 @@ import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import Algorithm.Algorithm;
+import Algorithm.ImageDetails;
 import constants.Constants;
+import gui.ContentManager;
 import gui.ContentMainClasses.ContentSettings;
 import gui.ContentMainClasses.ImagePanel;
 import gui.ContentMainClasses.NavigationSettings;
@@ -44,10 +46,12 @@ public class ContentMain implements DropTargetListener{
 	private NoImagePanel noImagePast, noImagePresent;
 	public ImagePanel imagePast, imagePresent;
 	
+	private ImageDetails pastDetails, presentDetails;
+	
 	//Buttons
 	private JButton detectButton;
 	
-	private JPanel container, navPanel, contentPanel;
+	private JPanel container, contentPanel;
 	
 	private JFileChooser fileChooser;
 	public File file1, file2;
@@ -59,10 +63,10 @@ public class ContentMain implements DropTargetListener{
 	
 	public JPanel setup()
 	{
-		instantiateDragandDrop();
-		 
 		instantiateContents();
 		
+		instantiateDragandDrop();
+
 		return container;
 	}
 	
@@ -134,12 +138,10 @@ public class ContentMain implements DropTargetListener{
 	{
 		pictureBoxPast.setBackground(Constants.SIDE_BAR_COLOR);
 		pictureBoxPast.setSize(new Dimension(400, 400));
-		pictureBoxPast.setLocation(25, 25);
 		pictureBoxPast.setLayout(new CardLayout());
 		
 		pictureBoxPresent.setBackground(Constants.SIDE_BAR_COLOR);
 		pictureBoxPresent.setSize(new Dimension(400, 400));
-		pictureBoxPresent.setLocation(25, 25);
 		pictureBoxPresent.setLayout(new CardLayout());
 		
 		int gapSize = 50;
@@ -248,6 +250,9 @@ public class ContentMain implements DropTargetListener{
 				algorithm = new Algorithm(imagePast, imagePresent);
 				
 				algorithm.startDetection();
+				
+				pastDetails = algorithm.getPastDetails();
+				presentDetails = algorithm.getPresentDetails();
 			}
 		});
 	}
@@ -276,6 +281,26 @@ public class ContentMain implements DropTargetListener{
 		
 		cardsPast.show(pictureBoxPast, "noImage");
 		cardsPresent.show(pictureBoxPresent, "noImage");
+	}
+
+	public ImagePanel getImagePast()
+	{
+		return imagePast;
+	}
+	
+	public ImagePanel getImagePresent()
+	{
+		return imagePresent;
+	}
+	
+	public ImageDetails getPastDetails()
+	{
+		return pastDetails;
+	}
+	
+	public ImageDetails getPresentDetails()
+	{
+		return presentDetails;
 	}
 	
 	/*
@@ -334,7 +359,7 @@ public class ContentMain implements DropTargetListener{
 						for(File file : files)
 						{
 							
-							if(checkDropPoisition())
+							if(checkDropPosition())
 							{
 								file1 = file;
 								
@@ -367,7 +392,7 @@ public class ContentMain implements DropTargetListener{
 		
 	}
 	
-	private Boolean checkDropPoisition()
+	private Boolean checkDropPosition()
 	{
 		int mouseX = MouseInfo.getPointerInfo().getLocation().x - manager.getLocationOnScreen().x;
 		int mouseY = MouseInfo.getPointerInfo().getLocation().y - manager.getLocationOnScreen().y;

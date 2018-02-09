@@ -17,15 +17,21 @@ public class ToolbarSettings {
 	
 	// Buttons
 	JButton homeButton;
-	JButton settingsButton;
 	JButton resetButton;
+	
+	JButton settingsButton;
+	JButton analyticsButton;
+	
 	JButton helpButton;
 	JButton exitButton;
 	
 	// Image Icons
 	ImageIcon homeIcon;
-	ImageIcon settingsIcon;
 	ImageIcon resetIcon;
+	
+	ImageIcon settingsIcon;
+	ImageIcon analyticIcon;
+	
 	ImageIcon helpIcon;
 	ImageIcon exitIcon;
 	
@@ -47,12 +53,16 @@ public class ToolbarSettings {
         buttonSetup(); // Setup each button
         
         // Add buttons to the toolbar
+        toolbar.add(resetButton);
+        
+        toolbar.add(Box.createVerticalGlue());
+        
         
         toolbar.add(homeButton);
         homeButton.setVisible(false);
-        
+        toolbar.add(analyticsButton);
+        analyticsButton.setVisible(true);
         toolbar.add(settingsButton);
-        toolbar.add(resetButton);
         toolbar.add(helpButton);
         toolbar.add(exitButton);
         
@@ -78,23 +88,29 @@ public class ToolbarSettings {
 	// Buttons
 	private void buttonSetup()
 	{
-		homeButton = new JButton(homeIcon); // Settings
+		homeButton = new JButton(homeIcon); // Home
 		homeButton.setToolTipText("Home");
 		homeButton.setFocusPainted(false);
 		homeButton.setFocusable(false);
 		homeButton.setBackground(Constants.SIDE_BAR_COLOR);
         
+		resetButton = new JButton(resetIcon); // Reset
+		resetButton.setToolTipText("Reset Image Frames");
+		resetButton.setFocusPainted(false);
+		resetButton.setFocusable(false);
+		resetButton.setBackground(Constants.SIDE_BAR_COLOR);
+			
         settingsButton = new JButton(settingsIcon); // Settings
         settingsButton.setToolTipText("Settings");
         settingsButton.setFocusPainted(false);
         settingsButton.setFocusable(false);
         settingsButton.setBackground(Constants.SIDE_BAR_COLOR);
         
-        resetButton = new JButton(resetIcon); // Settings
-		resetButton.setToolTipText("Reset Image Frames");
-		resetButton.setFocusPainted(false);
-		resetButton.setFocusable(false);
-		resetButton.setBackground(Constants.SIDE_BAR_COLOR);
+        analyticsButton = new JButton(analyticIcon); // Analytics
+        analyticsButton.setToolTipText("Analytics");
+        analyticsButton.setFocusPainted(false);
+        analyticsButton.setFocusable(false);
+        analyticsButton.setBackground(Constants.SIDE_BAR_COLOR);
 		
         helpButton = new JButton(helpIcon); // Help
         helpButton.setToolTipText("Help");
@@ -113,15 +129,10 @@ public class ToolbarSettings {
 	private void eventHandlerManager()
 	{
 		// EventHandlers
+		
+		//------------------------ Home -------------------------
 		homeButton.addActionListener((ActionEvent event) -> {
 			String view = "DEFAULT";
-			
-			setView(view);
-			manager.changeDisplay(view);
-		});
-		
-		settingsButton.addActionListener((ActionEvent event) -> {
-			String view = "SETTINGS";
 			
 			setView(view);
 			manager.changeDisplay(view);
@@ -131,47 +142,81 @@ public class ToolbarSettings {
             manager.mainView.resetViews();
         });
 		
+		//------------------------ Settings -------------------------
+		settingsButton.addActionListener((ActionEvent event) -> {
+			String view = "SETTINGS";
+			
+			setView(view);
+			manager.changeDisplay(view);
+		});
+		
+		analyticsButton.addActionListener((ActionEvent event) -> {
+			
+			String view = "ANALYTICS";
+			
+			setView(view);
+			manager.changeDisplay(view);
+		});
+	
+		//------------------------ Analytics -------------------------
+		
+		//------------------------ Other -------------------------
         exitButton.addActionListener((ActionEvent event) -> {
             System.exit(0);
         });
 	}
+	
 	
 	private void setView(String view)
 	{
 		if(view.equals("DEFAULT"))
 		{
 			homeButton.setVisible(false);
-			settingsButton.setVisible(true);
 			resetButton.setVisible(true);
+			
+			settingsButton.setVisible(true);
+			
+			analyticsButton.setVisible(true);
+			
 			helpButton.setVisible(true);
 			exitButton.setVisible(true);
 		}
 		else if(view.equals("SETTINGS"))
 		{
 			homeButton.setVisible(true);
-			settingsButton.setVisible(false);
 			resetButton.setVisible(false);
+			
+			settingsButton.setVisible(true);
+			analyticsButton.setVisible(true);
+			
 			helpButton.setVisible(true);
 			exitButton.setVisible(true);
 		}
 		else if(view.equals("ANALYTICS"))
 		{
 			homeButton.setVisible(true);
-			settingsButton.setVisible(true);
 			resetButton.setVisible(false);
+			
+			settingsButton.setVisible(true);
+			analyticsButton.setVisible(false);
+			
 			helpButton.setVisible(true);
 			exitButton.setVisible(true);
 		}
 	}
 	
 	// Icons
+	
 	private void getIcons()
 	{
 		// Icons
-		homeIcon = new ImageIcon("resources/MaterialHome.png");
-        settingsIcon = new ImageIcon("resources/MaterialSettings.png");
-        resetIcon = new ImageIcon("resources/MaterialRefresh.png");
-        helpIcon = new ImageIcon("resources/MaterialHelp.png");
-        exitIcon = new ImageIcon("resources/MaterialExit.png");
+		homeIcon = new ImageIcon("resources/Logos/MaterialHome.png");
+		resetIcon = new ImageIcon("resources/Logos/MaterialRefresh.png");
+		
+        settingsIcon = new ImageIcon("resources/Logos/MaterialSettings.png");
+        analyticIcon = new ImageIcon("resources/Logos/MaterialAnalytics.png");
+        
+        helpIcon = new ImageIcon("resources/Logos/MaterialHelp.png");
+        exitIcon = new ImageIcon("resources/Logos/MaterialExit.png");
 	}
 }

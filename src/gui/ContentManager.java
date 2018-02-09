@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 import constants.Constants;
+import gui.ContentClasses.ContentAnalytics;
+import gui.ContentClasses.ContentMain;
 
 public class ContentManager extends JFrame 
 {
@@ -21,11 +23,14 @@ public class ContentManager extends JFrame
 	private display displayView;
 	
 	// Classes
-	private ToolbarSettings toolbarSettings;
+	private ToolbarSettings toolbarSettings;	
+	
 	public ContentMain mainView;
+	public ContentAnalytics analyticsView;
 	
 	private JPanel mainPanel;
 	private JPanel settingsPanel;
+	private JPanel analyticsPanel;
 	
 	private JToolBar toolbar;
 	
@@ -43,23 +48,49 @@ public class ContentManager extends JFrame
 		setView();
 	}
 	
+	private void instantiateFrame()
+	{
+		// Settings
+		this.setResizable(false);
+		this.setSize(Constants.FRAME_WIDTH, Constants.FRAME_HEIGHT);
+		this.setVisible(true);
+		this.getContentPane().setBackground(Constants.BACKGROUND_COLOR);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		// Sets frame in the center of the screen
+		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+	    int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
+	    int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
+	    this.setLocation(x, y);
+	}
+	
+	private void frameSetup()
+	{
+		// instantiate and setup Toolbar
+		toolbar = new JToolBar();
+		toolbarSetup();
+	}
+	
 	public void setView()
 	{
 		if(displayView == display.DEFAULT)
 		{
 			if(mainPanel == null) 
 			{
-				System.out.println("Initalising Default View");
+				System.out.println("Initalising default View.\n");
 				setupDefaultView();
+				mainPanel.setVisible(true);
 			}
 			else
 			{
+				System.out.println("Switching to main view.\n");
+				analyticsView.switchViews(false);
 				mainPanel.setVisible(true);
 			}
 		}
 		else if(displayView == display.SETTINGS)
 		{
-			mainPanel.setVisible(false);
+			System.out.println("Switching to settings view.\n");
 			/*
 			if(settingsPanel == null) 
 			{
@@ -72,6 +103,35 @@ public class ContentManager extends JFrame
 				settingsPanel.setVisible(true);
 			}
 			*/
+		}
+		else if(displayView == display.ANALYTICS)
+		{
+			if(analyticsPanel == null) 
+			{
+				System.out.println("Initalising analytic View.\n");
+				
+				setupAdminView();
+				
+				analyticsView.switchViews(true);
+				mainPanel.setVisible(false);
+			}
+			else
+			{
+				System.out.println("Switching to analytic view.\n");
+				
+				if(mainView.getImagePast() != null && mainView.getImagePresent() != null && mainView.getPastDetails() != null && mainView.getPresentDetails() != null)
+				{
+					System.out.println("Passing Information.\n");
+					analyticsView.setImagePast(mainView.file1);
+					analyticsView.setImagePresent(mainView.file2);
+					
+					analyticsView.setPastDetails(mainView.getPastDetails());
+					analyticsView.setPresentDetails(mainView.getPresentDetails());
+				}
+				
+				analyticsView.switchViews(true);
+				mainPanel.setVisible(false);
+			}
 		}
 	}
 	
@@ -124,27 +184,23 @@ public class ContentManager extends JFrame
 		
 	}
 	
-	private void instantiateFrame()
+	private void setupAdminView()
 	{
-		// Settings
-		this.setResizable(false);
-		this.setSize(Constants.FRAME_WIDTH, Constants.FRAME_HEIGHT);
-		this.setVisible(true);
-		this.getContentPane().setBackground(Constants.BACKGROUND_COLOR);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		analyticsView = new ContentAnalytics(this);
 		
-		// Sets frame in the center of the screen
-		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	    int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
-	    this.setLocation(x, y);
-	}
-	
-	private void frameSetup()
-	{
-		// instantiate and setup Toolbar
-		toolbar = new JToolBar();
-		toolbarSetup();
+		if(mainView.getImagePast() != null && mainView.getImagePresent() != null && mainView.getPastDetails() != null && mainView.getPresentDetails() != null)
+		{
+			System.out.println("Passing Information.\n");
+			analyticsView.setImagePast(mainView.file1);
+			analyticsView.setImagePresent(mainView.file2);
+			
+			analyticsView.setPastDetails(mainView.getPastDetails());
+			analyticsView.setPresentDetails(mainView.getPresentDetails());
+		}
+		
+		analyticsPanel = analyticsView.setup();
+		
+		this.add(analyticsPanel, BorderLayout.CENTER);
 	}
 	
 	private void toolbarSetup()
