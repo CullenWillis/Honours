@@ -23,6 +23,16 @@ public class DrawToolTriangles extends JPanel {
     	locations = _locations;
     }
 
+    public void setImage(Image image)
+    {
+    	backgroundImage = image;
+    }
+    
+    public void setTriangles(int[][][] triangles)
+    {
+    	locations = triangles;
+    }
+    
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -30,44 +40,47 @@ public class DrawToolTriangles extends JPanel {
         g.drawImage(backgroundImage, 0, 0, null);
         g.setColor(Color.WHITE);
         
-        for(int i = 0; i < locations.length; i++)
-        {
-        	for(int j = 0; j < 3; j++)
-        	{
-            	int x1 = (int) Math.round(locations[i][j][0]);
-            	int y1 = (int)  Math.round(locations[i][j][1]);
-            	
-            	int x2, y2;
-            	
-            	if(j != 2)
-            	{
-            		x2 = (int) Math.round(locations[i][j + 1][0]);
-                	y2 = (int)  Math.round(locations[i][j + 1][1]);
-            	}
-            	else
-            	{
-            		x2 = (int) Math.round(locations[i][0][0]);
-                	y2 = (int)  Math.round(locations[i][0][1]);
-            	}
-            	
-            	boolean check1 = checkPosition(x1, y1);
-            	boolean check2 = checkPosition(x2, y2);
-            	
-            	if(check1 && check2)
-            	{
-            		if(debug)
-            		{
-            			if(j == 0)
-                		{ 
-                			System.out.println("\n");
-                		}
-                		System.out.println("Drawing: [" + x1 + ", " + y1 + "] to [" + x2 + ", " + y2 + "]");
-            		}
-            		
-                	g.drawLine(x1, y1, x2, y2);
-            	}
-        	}
-        }   
+        if(locations != null)
+        {      
+	        for(int i = 0; i < locations.length; i++)
+	        {
+	        	for(int j = 0; j < 3; j++)
+	        	{
+	            	int x1 = (int) Math.round(locations[i][j][0]);
+	            	int y1 = (int)  Math.round(locations[i][j][1]);
+	            	
+	            	int x2, y2;
+	            	
+	            	if(j != 2)
+	            	{
+	            		x2 = (int) Math.round(locations[i][j + 1][0]);
+	                	y2 = (int)  Math.round(locations[i][j + 1][1]);
+	            	}
+	            	else
+	            	{
+	            		x2 = (int) Math.round(locations[i][0][0]);
+	                	y2 = (int)  Math.round(locations[i][0][1]);
+	            	}
+	            	
+	            	boolean check1 = checkPosition(x1, y1);
+	            	boolean check2 = checkPosition(x2, y2);
+	            	
+	            	if(check1 && check2)
+	            	{
+	            		if(debug)
+	            		{
+	            			if(j == 0)
+	                		{ 
+	                			System.out.println("\n");
+	                		}
+	                		System.out.println("Drawing: [" + x1 + ", " + y1 + "] to [" + x2 + ", " + y2 + "]");
+	            		}
+	            		
+	                	g.drawLine(x1, y1, x2, y2);
+	            	}
+	        	}
+	        }   
+        }
     }
 
     private Boolean checkPosition(int x1, int y1)

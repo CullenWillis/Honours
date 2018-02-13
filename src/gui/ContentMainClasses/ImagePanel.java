@@ -34,6 +34,8 @@ public class ImagePanel extends JPanel {
 	private File transformedImageFile;
 	private String transformedImagePath;
 	
+	private String imageType = null;
+	
 	// Contains image
 	public ImagePanel() 
 	{
@@ -60,6 +62,7 @@ public class ImagePanel extends JPanel {
 		BufferedImage i = getBufferedImage(image);
 		
 		writeImage(i);
+		
 		setImage(image);
 		imageLabel.setIcon(new ImageIcon(imageSrc));
 	}
@@ -105,36 +108,44 @@ public class ImagePanel extends JPanel {
 		updateImage(image);
 	}
 	
+	public void setImageType(String type)
+	{
+		imageType = type;
+	}
+	
 	public void writeImage(BufferedImage image)
 	{
 		try
 		{
 			String dataFolder = System.getenv("APPDATA");
-			String path1 = dataFolder + "\\FacialComparison\\images\\processedImage.jpg";	
-			String path2 = dataFolder + "\\FacialComparison\\images\\processedImage1.jpg";
+			String path = dataFolder;
 			
-			File f1 = new File(path1);  //output file path
-			File f2 = new File(path2);
+			if(imageType.equals("past"))
+			{
+				path = path + "\\FacialComparison\\images\\processedImage1.jpg";	
+			}
+			else if (imageType.equals("present"))
+			{
+				path = path + "\\FacialComparison\\images\\processedImage2.jpg";	
+			}
 			
-			Path pathToFile1 = Paths.get(path1);
-			Path pathToFile2 = Paths.get(path2);
+			File file = new File(path);  //output file path
 			
-			if(f1.exists() && f2.exists())
+			Path pathToFile = Paths.get(path);
+			
+			if(file.exists())
 			{
 				try 
 				{
-				    Files.delete(pathToFile1);
-				    Files.delete(pathToFile2);
+				    Files.delete(pathToFile);
 				} 
 				catch (NoSuchFileException x) 
 				{
-				    System.err.format("%s: no such" + " file or directory%n", path1);
-				    System.err.format("%s: no such" + " file or directory%n", path2);
+				    System.err.format("%s: no such" + " file or directory%n", path);
 				} 
 				catch (DirectoryNotEmptyException x) 
 				{
-				    System.err.format("%s not empty%n", path1);
-				    System.err.format("%s not empty%n", path2);
+				    System.err.format("%s not empty%n", path);
 				} 
 				catch (IOException x) 
 				{
@@ -143,24 +154,15 @@ public class ImagePanel extends JPanel {
 				}
 			}
 			
-			if(!f1.exists())
+			if(!file.exists())
 			{
-				Files.createDirectories(pathToFile1.getParent());
+				Files.createDirectories(pathToFile.getParent());
 				
-				transformedImagePath = path1;
-				ImageIO.write(image, "jpg", f1);
+				transformedImagePath = path;
+				ImageIO.write(image, "jpg", file);
 				
-				transformedImageFile = f1;
+				transformedImageFile = file;
 			}
-			else if (f1.exists())
-			{
-				Files.createDirectories(pathToFile2.getParent());
-				
-				transformedImagePath = path2;
-				ImageIO.write(image, "jpg", f2);
-				
-				transformedImageFile = f2;
-			}	
 		}
 		catch(IOException e)
 		{

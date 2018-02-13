@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -29,6 +30,12 @@ public class ContentAnalytics {
 	Timer timer;
 	
 	private ContentSettings contentSettings;
+	
+	DrawToolLandmarks pastLandmarks;
+	DrawToolLandmarks presentLandmarks;
+	
+	DrawToolTriangles pastTriangles;
+	DrawToolTriangles presentTriangles;
 	
 	private JPanel container, contentPanel;
 	
@@ -114,6 +121,20 @@ public class ContentAnalytics {
 		
 		contentPanel.add(pictureBoxPast, null);
 		contentPanel.add(pictureBoxPresent, null);
+		
+		// Card setup
+		
+		pastLandmarks = new DrawToolLandmarks(null, null);
+		presentLandmarks = new DrawToolLandmarks(null, null);
+		
+		pastTriangles = new DrawToolTriangles(null, null);
+		presentTriangles = new DrawToolTriangles(null, null);;
+		
+		pictureBoxPast.add(pastLandmarks, "landmarks");
+		pictureBoxPresent.add(presentLandmarks, "landmarks");
+		
+		pictureBoxPast.add(pastTriangles, "triangles");
+		pictureBoxPresent.add(presentTriangles, "triangles");
 	}
 
 	public void switchViews(boolean option)
@@ -139,8 +160,13 @@ public class ContentAnalytics {
 			{
 				System.out.println("Data acquired");
 				
+				imagePast.setImageType("past");
 				imagePast.loadImage(file1);
+				//addFrame(pastDetails.getLandmarks(), imagePast);
+				
+				imagePresent.setImageType("present");
 				imagePresent.loadImage(file2);
+				//addFrame(presentDetails.getLandmarks(), imagePresent);
 				
 				startDrawing(pastDetails, imagePast, presentDetails, imagePresent);	
 				
@@ -153,6 +179,19 @@ public class ContentAnalytics {
 			container.setVisible(option);
 		}
 		
+	}
+	
+	private void addFrame(int[][] landmarks ,ImagePanel iPanel)
+	{
+		JFrame frame = new JFrame("LandmarkDemo");
+		Image image = new ImageIcon(iPanel.getFile().getAbsolutePath()).getImage();
+		DrawToolLandmarks panel = new DrawToolLandmarks(landmarks, image);
+		
+		frame.setDefaultCloseOperation(frame.DISPOSE_ON_CLOSE);
+		frame.getContentPane().add(panel, BorderLayout.CENTER);
+		frame.setResizable(false);
+		frame.setSize(new Dimension(image.getWidth(null) + 25, image.getHeight(null) + 25));
+		frame.setVisible(true);
 	}
 	
 	public void setView(String option)
@@ -185,37 +224,19 @@ public class ContentAnalytics {
 	
 	// -------------------------------- Image Drawing -------------------------
 	
-	private void startDrawing(ImageDetails past, ImagePanel pastImage, ImageDetails present, ImagePanel presentImage)
+	private void startDrawing(ImageDetails pastDetails, ImagePanel pastImage, ImageDetails presentDetails, ImagePanel presentImage)
 	{
-		DrawToolLandmarks pastLandmarks = drawLandmarks(past, pastImage);
-		DrawToolLandmarks presentLandmarks = drawLandmarks(present, presentImage);
+		pastLandmarks.setImage(new ImageIcon(pastImage.getTransformedFile().getAbsolutePath()).getImage());
+		pastLandmarks.setLandmarks(pastDetails.getLandmarks());
 		
-		DrawToolTriangles pastTriangles = drawTriangles(past, pastImage);
-		DrawToolTriangles presentTriangles = drawTriangles(present, presentImage);
+		presentLandmarks.setImage(new ImageIcon(presentImage.getTransformedFile().getAbsolutePath()).getImage());
+		presentLandmarks.setLandmarks(presentDetails.getLandmarks());
+
+		pastTriangles.setImage(new ImageIcon(pastImage.getTransformedFile().getAbsolutePath()).getImage());
+		pastTriangles.setTriangles(pastDetails.getTriangles());
 		
-		pictureBoxPast.add(pastLandmarks, "landmarks");
-		pictureBoxPresent.add(presentLandmarks, "landmarks");
-		
-		pictureBoxPast.add(pastTriangles, "triangles");
-		pictureBoxPresent.add(presentTriangles, "triangles");
-	}
-	
-	private DrawToolLandmarks drawLandmarks(ImageDetails details, ImagePanel imageP)
-	{
-		Image image = new ImageIcon(imageP.getTransformedFile().getAbsolutePath()).getImage();
-		
-		DrawToolLandmarks panel = new DrawToolLandmarks(details.getLandmarks(), image);
-		
-		return panel;
-	}
-	
-	private DrawToolTriangles drawTriangles(ImageDetails details, ImagePanel imageP)
-	{
-		Image image = new ImageIcon(imageP.getTransformedFile().getAbsolutePath()).getImage();
-		
-		DrawToolTriangles panel = new DrawToolTriangles(details.getTriangles(), image);
-		
-		return panel;
+		presentTriangles.setImage(new ImageIcon(presentImage.getTransformedFile().getAbsolutePath()).getImage());
+		presentTriangles.setTriangles(presentDetails.getTriangles());
 	}
 	
 	// -------------------------------- Getter & Setters -------------------------

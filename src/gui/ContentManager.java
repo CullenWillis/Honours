@@ -50,6 +50,8 @@ public class ContentManager extends JFrame
 	
 	private void instantiateFrame()
 	{
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage("resources/Logos/CVico.png"));
+		
 		// Settings
 		this.setResizable(false);
 		this.setSize(Constants.FRAME_WIDTH, Constants.FRAME_HEIGHT);

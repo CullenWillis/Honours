@@ -31,7 +31,6 @@ import constants.Constants;
 import gui.ContentManager;
 import gui.ContentMainClasses.ContentSettings;
 import gui.ContentMainClasses.ImagePanel;
-import gui.ContentMainClasses.NavigationSettings;
 import gui.ContentMainClasses.NoImagePanel;
 
 public class ContentMain implements DropTargetListener{
@@ -213,6 +212,7 @@ public class ContentMain implements DropTargetListener{
 				{
 					ContentMain.this.file1 = fileChooser.getSelectedFile();
 					
+					ContentMain.this.imagePast.setImageType("past");
 					ContentMain.this.imagePast.loadImage(ContentMain.this.file1);
 					
 					ContentMain.this.setView(true);
@@ -232,6 +232,7 @@ public class ContentMain implements DropTargetListener{
 				{
 					ContentMain.this.file2 = fileChooser.getSelectedFile();
 					
+					ContentMain.this.imagePresent.setImageType("present");
 					ContentMain.this.imagePresent.loadImage(ContentMain.this.file2);
 					
 					ContentMain.this.setView(false);
@@ -363,6 +364,7 @@ public class ContentMain implements DropTargetListener{
 							{
 								file1 = file;
 								
+								imagePast.setImageType("past");
 								imagePast.loadImage(file1);
 								
 								setView(true);
@@ -371,6 +373,7 @@ public class ContentMain implements DropTargetListener{
 							{
 								file2 = file;
 								
+								imagePresent.setImageType("present");
 								imagePresent.loadImage(file2);
 								
 								setView(false);

@@ -6,7 +6,7 @@ public class Constants {
 
 private Constants(){ }
 	
-	public static final String APPLICATION_NAME = "Face comparison";
+	public static final String APPLICATION_NAME = "A.I.F.R";
 	
 	public static final int FRAME_WIDTH = 1280;
 	public static final int FRAME_HEIGHT = 720;
