@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
@@ -18,11 +21,17 @@ import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import Algorithm.Algorithm;
@@ -35,6 +44,8 @@ import gui.ContentMainClasses.NoImagePanel;
 
 public class ContentMain implements DropTargetListener{
 
+	private static final long serialVersionUID = 1L;
+	
 	ContentManager manager;
 	
 	private Algorithm algorithm;
@@ -55,6 +66,11 @@ public class ContentMain implements DropTargetListener{
 	private JFileChooser fileChooser;
 	public File file1, file2;
 	
+	private JLabel resultHeader;
+	private JLabel resultFooter;
+	
+	public static int resultNumber;
+	
 	public ContentMain(ContentManager _manager)
 	{
 		manager = _manager;
@@ -70,7 +86,9 @@ public class ContentMain implements DropTargetListener{
 	}
 	
 	private void instantiateContents()
-	{
+	{	
+		resultNumber = 0;
+		
 		contentSettings = new ContentSettings();
 		
 		pictureBoxPast = new JPanel();
@@ -86,6 +104,8 @@ public class ContentMain implements DropTargetListener{
 		imagePresent.setName("imagePresent");
 		
 		detectButton = new JButton("Start");
+		resultHeader = new JLabel();
+		resultFooter = new JLabel();
 		
 		this.fileChooser = new JFileChooser();
 		fileChooserSetup();
@@ -130,6 +150,7 @@ public class ContentMain implements DropTargetListener{
 		container.add(contentPanel, BorderLayout.CENTER);
 		
 		pictureBoxSetup();
+		resultLabelSetup();
 		detectButtonSetup();
 	}
 	
@@ -177,6 +198,41 @@ public class ContentMain implements DropTargetListener{
         contentPanel.add(detectButton, null);
 	}
 	
+	private void resultLabelSetup()
+	{
+		int x = Constants.FRAME_WIDTH / 2;
+		int y = Constants.FRAME_HEIGHT / 2;
+
+		Font customFont = null;
+		
+		try {
+			customFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("resources/LobsterTwo-italic.ttf"))).deriveFont(Font.ITALIC, 80);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		resultHeader.setFont(customFont);
+		resultHeader.setBounds(x - 275, 15, 500, 100);
+		resultHeader.setHorizontalAlignment(SwingConstants.CENTER);
+		resultHeader.setVisible(true);
+		
+		resultFooter.setForeground(Color.GRAY);
+		resultFooter.setFont(new Font("Gadugi", Font.PLAIN, 16));
+		resultFooter.setBounds(x - 275, 65, 500, 100);
+		resultFooter.setHorizontalAlignment(SwingConstants.CENTER);
+		resultFooter.setVisible(true);
+		
+		contentPanel.add(resultHeader, null);
+		contentPanel.add(resultFooter, null);
+	}
+	
 	private void noImagePanelSetup()
 	{
 		JButton dialogButtonPast = new JButton();
@@ -214,7 +270,6 @@ public class ContentMain implements DropTargetListener{
 					
 					ContentMain.this.imagePast.setImageType("past");
 					ContentMain.this.imagePast.loadImage(ContentMain.this.file1);
-					
 					ContentMain.this.setView(true);
 				}
 			}
@@ -234,13 +289,12 @@ public class ContentMain implements DropTargetListener{
 					
 					ContentMain.this.imagePresent.setImageType("present");
 					ContentMain.this.imagePresent.loadImage(ContentMain.this.file2);
-					
 					ContentMain.this.setView(false);
 				}
 			}
 		});
 	}
-	
+
 	private void buttonDetectionEventHandler(JButton button)
 	{
 		// Add eventListener to load image button (Will open the dialog window)
@@ -250,12 +304,37 @@ public class ContentMain implements DropTargetListener{
 			{
 				algorithm = new Algorithm(imagePast, imagePresent);
 				
-				algorithm.startDetection();
+				resultHeader.setText("");
+				resultFooter.setText("");
+				detectButton.setText("Running...");
+				detectButton.setEnabled(false);
+				
+				resultNumber = algorithm.startDetection();
+				
+				showResult(resultNumber);
 				
 				pastDetails = algorithm.getPastDetails();
 				presentDetails = algorithm.getPresentDetails();
+				
+				detectButton.setEnabled(true);
+				detectButton.setText("Start");
 			}
 		});
+	}
+	
+	private void showResult(int r)
+	{
+		System.out.println(r);
+		if(r != 1)
+		{
+			resultHeader.setText("It's not a Match!");
+			resultFooter.setText("These two pictures are not of the same person.");
+		}
+		else
+		{
+			resultHeader.setText("It's a Match!");
+			resultFooter.setText("These two pictures are of the same person.");
+		}
 	}
 	
 	public void setView(boolean isPanelPast)
@@ -277,6 +356,8 @@ public class ContentMain implements DropTargetListener{
 	{
 		file1 = null;
 		file2 = null;
+		resultHeader.setText("");
+		resultFooter.setText("");
 		CardLayout cardsPast = (CardLayout) pictureBoxPast.getLayout();
 		CardLayout cardsPresent = (CardLayout) pictureBoxPresent.getLayout();
 		
@@ -366,7 +447,6 @@ public class ContentMain implements DropTargetListener{
 								
 								imagePast.setImageType("past");
 								imagePast.loadImage(file1);
-								
 								setView(true);
 							}
 							else
@@ -375,7 +455,6 @@ public class ContentMain implements DropTargetListener{
 								
 								imagePresent.setImageType("present");
 								imagePresent.loadImage(file2);
-								
 								setView(false);
 							}
 						}
@@ -397,13 +476,16 @@ public class ContentMain implements DropTargetListener{
 	
 	private Boolean checkDropPosition()
 	{
+		// Get mouse position
 		int mouseX = MouseInfo.getPointerInfo().getLocation().x - manager.getLocationOnScreen().x;
 		int mouseY = MouseInfo.getPointerInfo().getLocation().y - manager.getLocationOnScreen().y;
 		
+		// Get drop area
 		int positionX = 107;
 		int positionY = 119;
 		int borders = 401;
 		
+		// check if drop area, if true it must be the left drop region, if false its the right drop region.
 		if(mouseX > positionX && mouseX < (positionX + borders))
 		{
 			if(mouseY > positionY && mouseY < (positionY + borders))
@@ -415,6 +497,7 @@ public class ContentMain implements DropTargetListener{
 		return false;
 	}
 
+	
 	@Override
 	public void dropActionChanged(DropTargetDragEvent arg0) {
 		// TODO Auto-generated method stub

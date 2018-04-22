@@ -4,7 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
@@ -17,7 +20,7 @@ public class ContentManager extends JFrame
 	private static final long serialVersionUID = 1L;
 
 	enum display {
-		DEFAULT, SETTINGS, ANALYTICS;
+		DEFAULT, ANALYTICS;
 	}
 	
 	private display displayView;
@@ -29,7 +32,6 @@ public class ContentManager extends JFrame
 	public ContentAnalytics analyticsView;
 	
 	private JPanel mainPanel;
-	private JPanel settingsPanel;
 	private JPanel analyticsPanel;
 	
 	private JToolBar toolbar;
@@ -90,29 +92,13 @@ public class ContentManager extends JFrame
 				mainPanel.setVisible(true);
 			}
 		}
-		else if(displayView == display.SETTINGS)
-		{
-			System.out.println("Switching to settings view.\n");
-			/*
-			if(settingsPanel == null) 
-			{
-				System.out.println("Initalising Settings View");
-				setupsettingsView();
-			}
-			else
-			{
-				mainPanel.setVisible(false);
-				settingsPanel.setVisible(true);
-			}
-			*/
-		}
 		else if(displayView == display.ANALYTICS)
 		{
 			if(analyticsPanel == null) 
 			{
 				System.out.println("Initalising analytic View.\n");
 				
-				setupAdminView();
+				setupAnalyticsView();
 				
 				analyticsView.switchViews(true);
 				mainPanel.setVisible(false);
@@ -143,10 +129,6 @@ public class ContentManager extends JFrame
 		{
 			displayView = display.DEFAULT;
 		}
-		else if(view.equals("SETTINGS"))
-		{
-			displayView = display.SETTINGS;
-		}
 		else if(view.equals("ANALYTICS"))
 		{
 			displayView = display.ANALYTICS;
@@ -160,10 +142,6 @@ public class ContentManager extends JFrame
 		if(displayView == display.DEFAULT)
 		{
 			return "DISPLAY";
-		}
-		else if(displayView == display.SETTINGS)
-		{
-			return "SETTINGS";
 		}
 		else if(displayView == display.ANALYTICS)
 		{
@@ -181,12 +159,7 @@ public class ContentManager extends JFrame
 		this.add(mainPanel, BorderLayout.CENTER);
 	}
 	
-	private void setupSettingsView()
-	{
-		
-	}
-	
-	private void setupAdminView()
+	private void setupAnalyticsView()
 	{
 		analyticsView = new ContentAnalytics(this);
 		

@@ -33,8 +33,7 @@ public class DrawToolLandmarks extends JPanel {
     
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        // Draw background image each time the panel is repainted.
+        
         g.drawImage(backgroundImage, 0, 0, null);
         g.setColor(Color.WHITE);
         

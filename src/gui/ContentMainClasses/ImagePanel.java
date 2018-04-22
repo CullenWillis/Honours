@@ -20,10 +20,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import constants.Constants;
+import constants.Settings;
+import constants.SettingsInterface;
 
 public class ImagePanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
+	
+	SettingsInterface settings;
 	
 	private JLabel imageLabel;
 	
@@ -33,6 +37,7 @@ public class ImagePanel extends JPanel {
 	private ImageIcon transformedImageIcon;
 	private File transformedImageFile;
 	private String transformedImagePath;
+	private BufferedImage transformedBufferedImage;
 	
 	private String imageType = null;
 	
@@ -40,7 +45,7 @@ public class ImagePanel extends JPanel {
 	public ImagePanel() 
 	{
 		this.imageLabel = new JLabel();
-		
+		settings = new Settings();
 		setLayout(new BorderLayout());
 		
 		int gap = 5;
@@ -61,10 +66,20 @@ public class ImagePanel extends JPanel {
 		
 		BufferedImage i = getBufferedImage(image);
 		
+		transformedBufferedImage = i;
+		
 		writeImage(i);
 		
 		setImage(image);
 		imageLabel.setIcon(new ImageIcon(imageSrc));
+	}
+	
+	// Crop image
+	public void cropImage(BufferedImage image, int x, int y, int width, int height)
+	{
+		BufferedImage croppedImage = image.getSubimage(x, y, width, height);
+		
+		updateImage(croppedImage);
 	}
 	
 	// Scaling image
@@ -113,20 +128,19 @@ public class ImagePanel extends JPanel {
 		imageType = type;
 	}
 	
-	public void writeImage(BufferedImage image)
+	private void writeImage(BufferedImage image)
 	{
 		try
 		{
-			String dataFolder = System.getenv("APPDATA");
-			String path = dataFolder;
+			String path = "";
 			
 			if(imageType.equals("past"))
 			{
-				path = path + "\\FacialComparison\\images\\processedImage1.jpg";	
+				path = settings.getImageFile() + "processedImage1.jpg";	
 			}
 			else if (imageType.equals("present"))
 			{
-				path = path + "\\FacialComparison\\images\\processedImage2.jpg";	
+				path = settings.getImageFile() + "processedImage2.jpg";	
 			}
 			
 			File file = new File(path);  //output file path
@@ -170,6 +184,11 @@ public class ImagePanel extends JPanel {
 		}
 	}
 	
+	public ImageIcon getIcon()
+	{
+		return transformedImageIcon;
+	}
+	
 	public boolean checkIcon()
 	{
 		if (imageLabel.getIcon() == null) 
@@ -203,6 +222,11 @@ public class ImagePanel extends JPanel {
 	{
 		return transformedImageFile;
 	}
+	
+	public BufferedImage getTransformedBufferedImage()
+	{
+		return transformedBufferedImage;
+	}
 
 	public String getTransformedPath()
 	{
@@ -212,7 +236,7 @@ public class ImagePanel extends JPanel {
 	public static BufferedImage getBufferedImage(Image img)
 	{
 	    // Create a buffered image with transparency
-	    BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+	    BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
 
 	    // Draw the image on to the buffered image
 	    Graphics2D bGr = bimage.createGraphics();

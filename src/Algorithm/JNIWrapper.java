@@ -4,41 +4,47 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-public class JNIWrapper {
+public class JNIWrapper{
 
+	// Instantiate classes inside shared library
 	public native void landmarkDetection(String imagePath, String datPath);
 	public native int delaunayTriangulation(String imagePath, String pointPath);
+	public native int faceRecognition(String imagePath, String shapePredictor, String model);
 	
+	// Load the shared libraries
 	static {
 		System.loadLibrary("DlibLibrary");
 		System.loadLibrary("DelaunayLib");
+		System.loadLibrary("dnn_face_recognition_ex");
 	}
 	
+	// method to call the class inside the shared library, this gathers the Delaunay Triangulation 
 	public int[][][] getDelaunayTriangulation(String imagePath, String pointName, String triangleName)
 	{
+		// load the data
 		String pointPath = System.getProperty("user.dir") + "\\" + pointName;
 		
+		// call the function in DLL
 		JNIWrapper wrapper = new JNIWrapper();
-		
 		int size = wrapper.delaunayTriangulation(imagePath, pointPath);
 		
+		// read the locations and return and array
 		return readTrianglesFile(triangleName, size);
 	}
 
+	// method to call the class inside the shared library, this gathers the Facial Landmarks
 	public int[][] getLandmarks(String imagePath, String filename)
 	{
-		File file = new File("resources/shape_predictor.dat");
+		// load the data
+		File file = new File("shape_predictor.dat");
 		String shapePredictor = file.getAbsolutePath();
 		
+		// call the function in DLL
 		JNIWrapper wrapper = new JNIWrapper();
 		wrapper.landmarkDetection(imagePath, shapePredictor);
 		
+		// read the locations and return and array
 		int[][] locations = readLandmarksFile(filename);
 		
 		if(locations != null)
@@ -48,8 +54,18 @@ public class JNIWrapper {
 		return null;
 	}
 	
+	// Get the results from analysis stage
+	public int getResults(String image, String shape, String model)
+	{
+		// call the function in DLL and return 1 if it's a match and 0 if it's not a match
+		JNIWrapper wrapper = new JNIWrapper();
+		return wrapper.faceRecognition(image, shape, model);
+	}
+	
+	// Read landmarks file and put the information in correct format
 	private static int[][] readLandmarksFile(String filename)
 	{
+		// Read file
 		BufferedReader br = null;
 		FileReader fr = null;
 
@@ -64,6 +80,7 @@ public class JNIWrapper {
 			int countX = 0;
 			int countY = 0;
 			
+			// put information into correct format
 			while ((sCurrentLine = br.readLine()) != null) 
 			{
 				locations[countX][countY] = Integer.valueOf(sCurrentLine);
@@ -103,8 +120,10 @@ public class JNIWrapper {
 		return null;
 	}
 	
+	// Read each location in triangles file and put the information in correct format
 	private static int[][][] readTrianglesFile(String filename, int size)
 	{
+		// Read each location in triangles file
 		BufferedReader br = null;
 		FileReader fr = null;
 
@@ -119,6 +138,7 @@ public class JNIWrapper {
 			int countX = 0;
 			int countY = 0;
 			
+			//  put the information in correct format
 			while ((sCurrentLine = br.readLine()) != null) 
 			{
 				String line = sCurrentLine;

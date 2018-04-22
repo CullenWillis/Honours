@@ -9,6 +9,7 @@ public class ImageDetails {
 	
 	private ImagePanel image;
 	
+	// Constructor for holding the landmarks and triangles produced during facial extraction stage
 	public ImageDetails(int[][] _landmarks, int[][][] _tirangles, ImagePanel _image)
 	{
 		landmarks = _landmarks;
@@ -16,6 +17,7 @@ public class ImageDetails {
 		image = _image;
 	}
 	
+	// Getters
 	public int[][] getLandmarks()
 	{
 		return landmarks;

@@ -20,6 +20,8 @@ private Constants(){ }
 	public static final Color BORDER_COLOR = new Color(237, 237, 237);
 	public static final Color BACKGROUND_COLOR = new Color(250, 250 ,250);
 	
+	public static final String CASCADE_CLASSIFIER = "B:\\OCV\\opencv\\build\\etc\\haarcascades\\haarcascade_frontalface_alt.xml";
+	
 	/*
 	public static final String HAARCASCADE_EYE = "B:\\Program Files\\opencv\\sources\\data\\haarcascades\\haarcascade_eye_P.xml";
 	public static final String HAARCASCADE_NOSE = "B:\\Program Files\\opencv\\sources\\data\\haarcascades\\haarcascade_nose_P.xml";

@@ -6,7 +6,10 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MouseInfo;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class DrawToolTriangles extends JPanel {
@@ -26,6 +29,11 @@ public class DrawToolTriangles extends JPanel {
     public void setImage(Image image)
     {
     	backgroundImage = image;
+    	
+    	/*
+        JLabel lbl = new JLabel(new ImageIcon(backgroundImage));
+        JOptionPane.showMessageDialog(null, lbl, "ImageDialog", 
+                                     JOptionPane.PLAIN_MESSAGE, null);*/
     }
     
     public void setTriangles(int[][][] triangles)
@@ -36,7 +44,7 @@ public class DrawToolTriangles extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Draw background image each time the panel is repainted.
+        // Draw background image each time the panel is repainted.        
         g.drawImage(backgroundImage, 0, 0, null);
         g.setColor(Color.WHITE);
         

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -12,7 +13,9 @@ import java.io.File;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.Timer;
 
 import Algorithm.ImageDetails;
@@ -39,12 +42,16 @@ public class ContentAnalytics {
 	
 	private JPanel container, contentPanel;
 	
+	private JLabel desc;
+	
 	private JPanel pictureBoxPast, pictureBoxPresent;
 	private ImagePanel imagePast, imagePresent;
 	
 	private ImageDetails pastDetails, presentDetails;
 	
 	private File file1, file2;
+	
+	int result = 0;
 	
 	public ContentAnalytics(ContentManager _manager)
 	{
@@ -99,9 +106,23 @@ public class ContentAnalytics {
 		container.add(contentPanel, BorderLayout.CENTER);
 		
 		pictureBoxSetup();
+		descriptionSetup();
 	}
 	
 	// -------------------------------- PICTURE BOX -------------------------
+	
+	private void descriptionSetup()
+	{
+		int y = Constants.FRAME_HEIGHT - 325;
+		
+		desc = new JLabel();
+		
+		desc.setBounds(50, y, 900, 200);
+		desc.setFont(new Font("gadugi", Font.PLAIN, 16));
+		desc.setText("No images have been loaded yet...");
+		desc.setVisible(true);
+		contentPanel.add(desc, null);
+	}
 	
 	private void pictureBoxSetup()
 	{
@@ -117,18 +138,17 @@ public class ContentAnalytics {
 		int height = Constants.FRAME_HEIGHT / 2 - 320;
 		
 		pictureBoxPast.setLocation(new Point(gapSize, height));
-		pictureBoxPresent.setLocation(new Point((gapSize * 2) + pictureBoxPresent.getWidth(), height));
+		pictureBoxPresent.setLocation(new Point((350) + pictureBoxPresent.getWidth(), height));
 		
 		contentPanel.add(pictureBoxPast, null);
 		contentPanel.add(pictureBoxPresent, null);
 		
 		// Card setup
-		
 		pastLandmarks = new DrawToolLandmarks(null, null);
 		presentLandmarks = new DrawToolLandmarks(null, null);
 		
 		pastTriangles = new DrawToolTriangles(null, null);
-		presentTriangles = new DrawToolTriangles(null, null);;
+		presentTriangles = new DrawToolTriangles(null, null);
 		
 		pictureBoxPast.add(pastLandmarks, "landmarks");
 		pictureBoxPresent.add(presentLandmarks, "landmarks");
@@ -162,11 +182,9 @@ public class ContentAnalytics {
 				
 				imagePast.setImageType("past");
 				imagePast.loadImage(file1);
-				//addFrame(pastDetails.getLandmarks(), imagePast);
 				
 				imagePresent.setImageType("present");
 				imagePresent.loadImage(file2);
-				//addFrame(presentDetails.getLandmarks(), imagePresent);
 				
 				startDrawing(pastDetails, imagePast, presentDetails, imagePresent);	
 				
@@ -178,20 +196,6 @@ public class ContentAnalytics {
 			timer.stop();
 			container.setVisible(option);
 		}
-		
-	}
-	
-	private void addFrame(int[][] landmarks ,ImagePanel iPanel)
-	{
-		JFrame frame = new JFrame("LandmarkDemo");
-		Image image = new ImageIcon(iPanel.getFile().getAbsolutePath()).getImage();
-		DrawToolLandmarks panel = new DrawToolLandmarks(landmarks, image);
-		
-		frame.setDefaultCloseOperation(frame.DISPOSE_ON_CLOSE);
-		frame.getContentPane().add(panel, BorderLayout.CENTER);
-		frame.setResizable(false);
-		frame.setSize(new Dimension(image.getWidth(null) + 25, image.getHeight(null) + 25));
-		frame.setVisible(true);
 	}
 	
 	public void setView(String option)
@@ -226,17 +230,39 @@ public class ContentAnalytics {
 	
 	private void startDrawing(ImageDetails pastDetails, ImagePanel pastImage, ImageDetails presentDetails, ImagePanel presentImage)
 	{
-		pastLandmarks.setImage(new ImageIcon(pastImage.getTransformedFile().getAbsolutePath()).getImage());
+		result = ContentMain.resultNumber;
+		
+		pastLandmarks.setImage(pastImage.getImage());
 		pastLandmarks.setLandmarks(pastDetails.getLandmarks());
 		
-		presentLandmarks.setImage(new ImageIcon(presentImage.getTransformedFile().getAbsolutePath()).getImage());
+		presentLandmarks.setImage(presentImage.getImage());
 		presentLandmarks.setLandmarks(presentDetails.getLandmarks());
 
-		pastTriangles.setImage(new ImageIcon(pastImage.getTransformedFile().getAbsolutePath()).getImage());
+		pastTriangles.setImage(pastImage.getImage());
 		pastTriangles.setTriangles(pastDetails.getTriangles());
 		
-		presentTriangles.setImage(new ImageIcon(presentImage.getTransformedFile().getAbsolutePath()).getImage());
+		presentTriangles.setImage(presentImage.getImage());
 		presentTriangles.setTriangles(presentDetails.getTriangles());
+		
+		pastLandmarks.repaint();
+		presentLandmarks.repaint();
+		pastTriangles.repaint();
+		presentTriangles.repaint();
+		
+		System.out.println(result);
+		
+		String content = "";
+		
+		if(result != 1)
+		{
+			content = "<html>Sadly it wasn't a match. <BR> Are you sure these pictures are of the same person? If so then try these tips: <BR> Make sure there is nothing abstructing the face <BR> Ensure the picture is in good lighting conditions. <BR> Make sure the face is clearly visible and covers most the image.</html>";
+		}
+		else
+		{
+			content = "<html>It's a match! <BR> These pictures contain the same person.</html>";
+		}
+		
+		desc.setText(content);
 	}
 	
 	// -------------------------------- Getter & Setters -------------------------

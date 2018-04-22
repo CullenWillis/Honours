@@ -19,20 +19,16 @@ public class ToolbarSettings {
 	JButton homeButton;
 	JButton resetButton;
 	
-	JButton settingsButton;
 	JButton analyticsButton;
 	
-	JButton helpButton;
 	JButton exitButton;
 	
 	// Image Icons
 	ImageIcon homeIcon;
 	ImageIcon resetIcon;
 	
-	ImageIcon settingsIcon;
 	ImageIcon analyticIcon;
 	
-	ImageIcon helpIcon;
 	ImageIcon exitIcon;
 	
 	JMenu settingsBar;
@@ -62,8 +58,6 @@ public class ToolbarSettings {
         homeButton.setVisible(false);
         toolbar.add(analyticsButton);
         analyticsButton.setVisible(true);
-        toolbar.add(settingsButton);
-        toolbar.add(helpButton);
         toolbar.add(exitButton);
         
         // Give buttons eventHandlers
@@ -99,24 +93,12 @@ public class ToolbarSettings {
 		resetButton.setFocusPainted(false);
 		resetButton.setFocusable(false);
 		resetButton.setBackground(Constants.SIDE_BAR_COLOR);
-			
-        settingsButton = new JButton(settingsIcon); // Settings
-        settingsButton.setToolTipText("Settings");
-        settingsButton.setFocusPainted(false);
-        settingsButton.setFocusable(false);
-        settingsButton.setBackground(Constants.SIDE_BAR_COLOR);
         
         analyticsButton = new JButton(analyticIcon); // Analytics
         analyticsButton.setToolTipText("Analytics");
         analyticsButton.setFocusPainted(false);
         analyticsButton.setFocusable(false);
         analyticsButton.setBackground(Constants.SIDE_BAR_COLOR);
-		
-        helpButton = new JButton(helpIcon); // Help
-        helpButton.setToolTipText("Help");
-        helpButton.setFocusPainted(false);
-        helpButton.setFocusable(false);
-        helpButton.setBackground(Constants.SIDE_BAR_COLOR);
         
         exitButton = new JButton(exitIcon); // Exit
         exitButton.setToolTipText("Exit");
@@ -142,14 +124,6 @@ public class ToolbarSettings {
             manager.mainView.resetViews();
         });
 		
-		//------------------------ Settings -------------------------
-		settingsButton.addActionListener((ActionEvent event) -> {
-			String view = "SETTINGS";
-			
-			setView(view);
-			manager.changeDisplay(view);
-		});
-		
 		analyticsButton.addActionListener((ActionEvent event) -> {
 			
 			String view = "ANALYTICS";
@@ -174,22 +148,8 @@ public class ToolbarSettings {
 			homeButton.setVisible(false);
 			resetButton.setVisible(true);
 			
-			settingsButton.setVisible(true);
-			
 			analyticsButton.setVisible(true);
 			
-			helpButton.setVisible(true);
-			exitButton.setVisible(true);
-		}
-		else if(view.equals("SETTINGS"))
-		{
-			homeButton.setVisible(true);
-			resetButton.setVisible(false);
-			
-			settingsButton.setVisible(true);
-			analyticsButton.setVisible(true);
-			
-			helpButton.setVisible(true);
 			exitButton.setVisible(true);
 		}
 		else if(view.equals("ANALYTICS"))
@@ -197,10 +157,8 @@ public class ToolbarSettings {
 			homeButton.setVisible(true);
 			resetButton.setVisible(false);
 			
-			settingsButton.setVisible(true);
 			analyticsButton.setVisible(false);
 			
-			helpButton.setVisible(true);
 			exitButton.setVisible(true);
 		}
 	}
@@ -213,10 +171,8 @@ public class ToolbarSettings {
 		homeIcon = new ImageIcon("resources/Logos/MaterialHome.png");
 		resetIcon = new ImageIcon("resources/Logos/MaterialRefresh.png");
 		
-        settingsIcon = new ImageIcon("resources/Logos/MaterialSettings.png");
         analyticIcon = new ImageIcon("resources/Logos/MaterialAnalytics.png");
         
-        helpIcon = new ImageIcon("resources/Logos/MaterialHelp.png");
         exitIcon = new ImageIcon("resources/Logos/MaterialExit.png");
 	}
 }
